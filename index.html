@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificador de Estoque Promocional</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -38,8 +38,11 @@
                 
                 <section class="unit-section" id="palmeira-section">
                     <div class="unit-header">
-                        <h2>Palmeira dos Índios</h2>
-                        <span class="badge">Unid. 13706</span>
+                        <div class="header-title">
+                            <h2>Palmeira dos Índios</h2>
+                            <span class="badge">Unid. 13706</span>
+                        </div>
+                        <button id="btn-export-13706" class="btn-export">📥 Excel</button>
                     </div>
                     <div class="cards-grid" id="list-13706"></div>
                     <p class="empty-msg" id="msg-13706">Nenhum item encontrado.</p>
@@ -47,8 +50,11 @@
 
                 <section class="unit-section" id="penedo-section">
                     <div class="unit-header">
-                        <h2>Penedo</h2>
-                        <span class="badge">Unid. 13707</span>
+                        <div class="header-title">
+                            <h2>Penedo</h2>
+                            <span class="badge">Unid. 13707</span>
+                        </div>
+                        <button id="btn-export-13707" class="btn-export">📥 Excel</button>
                     </div>
                     <div class="cards-grid" id="list-13707"></div>
                     <p class="empty-msg" id="msg-13707">Nenhum item encontrado.</p>
@@ -59,6 +65,6 @@
 
     </main>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
 </body>
 </html>
