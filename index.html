@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de Estoque Promocional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Conferência de Promoções</h1>
+        <p>Cruze seu estoque com a base de promoções vigente</p>
+    </header>
+
+    <main>
+        <div class="upload-section">
+            <label for="upload" class="drop-zone">
+                <span class="icon">📂</span>
+                <span>Clique para selecionar sua planilha de Estoque (.xlsx ou .csv)</span>
+                <input type="file" id="upload" accept=".xlsx, .xls, .csv">
+            </label>
+        </div>
+
+        <div id="loading" class="hidden">Processando dados...</div>
+
+        <div id="results" class="results-container hidden">
+            
+            <section class="unit-section" id="palmeira-section">
+                <div class="unit-header">
+                    <h2>Palmeira dos Índios</h2>
+                    <span class="badge">Unid. 13706</span>
+                </div>
+                <div class="cards-grid" id="list-13706">
+                    </div>
+                <p class="empty-msg" id="msg-13706">Nenhum item promocional com saldo nesta unidade.</p>
+            </section>
+
+            <section class="unit-section" id="penedo-section">
+                <div class="unit-header">
+                    <h2>Penedo</h2>
+                    <span class="badge">Unid. 13707</span>
+                </div>
+                <div class="cards-grid" id="list-13707">
+                    </div>
+                <p class="empty-msg" id="msg-13707">Nenhum item promocional com saldo nesta unidade.</p>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
