@@ -16,39 +16,47 @@
     </header>
 
     <main>
+        <div id="status-bd" style="text-align: center; margin-bottom: 10px; color: #558b2f; font-weight: bold;">
+            ⏳ Carregando banco de dados...
+        </div>
+
         <div class="upload-section">
             <label for="upload" class="drop-zone">
                 <span class="icon">📂</span>
-                <span>Clique para selecionar sua planilha de Estoque (.xlsx ou .csv)</span>
+                <span>Importar planilha de Estoque</span>
                 <input type="file" id="upload" accept=".xlsx, .xls, .csv">
             </label>
         </div>
 
-        <div id="loading" class="hidden">Processando dados...</div>
-
         <div id="results" class="results-container hidden">
             
-            <section class="unit-section" id="palmeira-section">
-                <div class="unit-header">
-                    <h2>Palmeira dos Índios</h2>
-                    <span class="badge">Unid. 13706</span>
-                </div>
-                <div class="cards-grid" id="list-13706">
-                    </div>
-                <p class="empty-msg" id="msg-13706">Nenhum item promocional com saldo nesta unidade.</p>
-            </section>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Pesquisar SKU ou Nome do produto...">
+            </div>
 
-            <section class="unit-section" id="penedo-section">
-                <div class="unit-header">
-                    <h2>Penedo</h2>
-                    <span class="badge">Unid. 13707</span>
-                </div>
-                <div class="cards-grid" id="list-13707">
+            <div class="units-wrapper">
+                
+                <section class="unit-section" id="palmeira-section">
+                    <div class="unit-header">
+                        <h2>Palmeira dos Índios</h2>
+                        <span class="badge">Unid. 13706</span>
                     </div>
-                <p class="empty-msg" id="msg-13707">Nenhum item promocional com saldo nesta unidade.</p>
-            </section>
+                    <div class="cards-grid" id="list-13706"></div>
+                    <p class="empty-msg" id="msg-13706">Nenhum item encontrado.</p>
+                </section>
 
+                <section class="unit-section" id="penedo-section">
+                    <div class="unit-header">
+                        <h2>Penedo</h2>
+                        <span class="badge">Unid. 13707</span>
+                    </div>
+                    <div class="cards-grid" id="list-13707"></div>
+                    <p class="empty-msg" id="msg-13707">Nenhum item encontrado.</p>
+                </section>
+
+            </div>
         </div>
+
     </main>
 
     <script src="script.js"></script>
