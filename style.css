@@ -161,3 +161,100 @@ main {
 }
 
 .hidden { display: none; }
+
+/* Container de Filtros */
+.filters-container {
+    margin-bottom: 20px;
+}
+
+.filters-row {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    white-space: nowrap;
+}
+
+.filter-group select {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.3s;
+    min-width: 180px;
+}
+
+.filter-group select:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 5px rgba(220, 237, 200, 0.5);
+}
+
+/* Header do Card com Badges */
+.card-header-info {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.badge-categoria {
+    background: linear-gradient(135deg, #e1bee7, #ce93d8);
+    color: #4a148c;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.badge-desconto {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+}
+
+.desconto-100 {
+    background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+    color: #1b5e20;
+}
+
+.desconto-50 {
+    background: linear-gradient(135deg, #fff9c4, #fff176);
+    color: #f57f17;
+}
+
+.desconto-sim {
+    background: linear-gradient(135deg, #b3e5fc, #81d4fa);
+    color: #01579b;
+}
+
+@media (max-width: 768px) {
+    .filters-row {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .filter-group select {
+        flex: 1;
+    }
+}

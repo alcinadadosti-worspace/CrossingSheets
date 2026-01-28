@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificador de Estoque Promocional</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -30,8 +30,27 @@
 
         <div id="results" class="results-container hidden">
             
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="🔍 Pesquisar SKU ou Nome do produto...">
+            <div class="filters-container">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="🔍 Pesquisar SKU ou Nome do produto...">
+                </div>
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label for="filtroCategoria">Categoria:</label>
+                        <select id="filtroCategoria">
+                            <option value="">Todas as Categorias</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroDesconto">Desconto/Brinde:</label>
+                        <select id="filtroDesconto">
+                            <option value="">Todos</option>
+                            <option value="100">Liberado até 100%</option>
+                            <option value="50">Liberado até 50%</option>
+                            <option value="sim">Qualquer liberação</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div class="units-wrapper">
@@ -65,6 +84,6 @@
 
     </main>
 
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 </body>
 </html>

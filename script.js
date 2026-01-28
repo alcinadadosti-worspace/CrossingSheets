@@ -5,10 +5,82 @@ function obterValorFlexivel(linha, nomeColunaAlvo) {
     return chaveEncontrada ? linha[chaveEncontrada] : undefined;
 }
 
+// Função para preencher o filtro de categorias
+function preencherFiltroCategorias() {
+    const selectCategoria = document.getElementById('filtroCategoria');
+    if (!selectCategoria) return;
+
+    // Limpar opções existentes (exceto a primeira)
+    selectCategoria.innerHTML = '<option value="">Todas as Categorias</option>';
+
+    // Ordenar categorias alfabeticamente
+    const categoriasOrdenadas = Array.from(categoriasDisponiveis).sort();
+
+    categoriasOrdenadas.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        selectCategoria.appendChild(option);
+    });
+}
+
+// Função para extrair o percentual do texto de desconto
+function extrairPercentualDesconto(texto) {
+    if (!texto) return null;
+    const textoLower = texto.toLowerCase();
+    if (textoLower.includes('100%')) return '100';
+    if (textoLower.includes('50%')) return '50';
+    if (textoLower.includes('sim') || textoLower.includes('liberado')) return 'sim';
+    return null;
+}
+
+// Função para aplicar todos os filtros
+function aplicarFiltros() {
+    const termoBusca = document.getElementById('searchInput').value.toLowerCase();
+    const categoriaFiltro = document.getElementById('filtroCategoria').value;
+    const descontoFiltro = document.getElementById('filtroDesconto').value;
+
+    const cards = document.querySelectorAll('.product-card');
+
+    cards.forEach(card => {
+        const textoCard = card.getAttribute('data-search');
+        const categoriaCard = card.getAttribute('data-categoria');
+        const descontoCard = card.getAttribute('data-desconto');
+
+        let visivel = true;
+
+        // Filtro de busca por texto
+        if (termoBusca && !textoCard.includes(termoBusca)) {
+            visivel = false;
+        }
+
+        // Filtro de categoria
+        if (categoriaFiltro && categoriaCard !== categoriaFiltro) {
+            visivel = false;
+        }
+
+        // Filtro de desconto
+        if (descontoFiltro) {
+            if (descontoFiltro === '100' && !descontoCard.includes('100')) {
+                visivel = false;
+            } else if (descontoFiltro === '50' && !descontoCard.includes('50')) {
+                visivel = false;
+            } else if (descontoFiltro === 'sim' && descontoCard === '') {
+                visivel = false;
+            }
+        }
+
+        card.style.display = visivel ? 'block' : 'none';
+    });
+}
+
 let promoSKUs = [];
+let promoDados = {}; // Armazena dados completos do BD (Categoria, Permitido desconto)
 // Arrays para armazenar os dados prontos para exportação
 let dadosPalmeira = [];
 let dadosPenedo = [];
+// Lista de categorias únicas para o filtro
+let categoriasDisponiveis = new Set();
 
 // 1. Carregar BD
 window.addEventListener('DOMContentLoaded', () => {
@@ -21,12 +93,35 @@ window.addEventListener('DOMContentLoaded', () => {
             const workbook = XLSX.read(data, {type: 'array'});
             const jsonBD = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
             
-            promoSKUs = jsonBD.map(item => {
+            jsonBD.forEach(item => {
                 let codigo = obterValorFlexivel(item, 'Código Produto');
                 if (!codigo) codigo = obterValorFlexivel(item, 'Codigo Produto');
-                return codigo ? String(codigo).trim() : null;
-            }).filter(Boolean);
-            
+
+                if (codigo) {
+                    const sku = String(codigo).trim();
+                    promoSKUs.push(sku);
+
+                    // Buscar Categoria
+                    let categoria = obterValorFlexivel(item, 'Categoria') || 'Sem categoria';
+                    categoria = String(categoria).trim();
+                    categoriasDisponiveis.add(categoria);
+
+                    // Buscar Permitido desconto ou brinde
+                    let permitido = obterValorFlexivel(item, 'Permitido desconto ou brinde?')
+                                 || obterValorFlexivel(item, 'Permitido desconto ou brinde')
+                                 || '';
+                    permitido = String(permitido).trim();
+
+                    promoDados[sku] = {
+                        categoria: categoria,
+                        permitidoDesconto: permitido
+                    };
+                }
+            });
+
+            // Preencher filtro de categorias
+            preencherFiltroCategorias();
+
             document.getElementById('status-bd').textContent = `✅ Banco de dados carregado (${promoSKUs.length} produtos)`;
         })
         .catch(error => {
@@ -84,20 +179,46 @@ function processarDados(estoque) {
 
         if (sku && promoSKUs.includes(sku) && saldo > 0) {
             matches++;
-            
+
+            // Buscar dados adicionais do BD
+            const dadosBD = promoDados[sku] || { categoria: 'Sem categoria', permitidoDesconto: '' };
+            const categoria = dadosBD.categoria;
+            const permitidoDesconto = dadosBD.permitidoDesconto;
+
             // Objeto limpo para o Excel e para o Card
             const produtoObj = {
                 SKU: sku,
                 Descricao: descBruto || 'Item Promocional',
-                Saldo: saldo
+                Saldo: saldo,
+                Categoria: categoria,
+                'Permitido Desconto/Brinde': permitidoDesconto
             };
+
+            // Determinar badge de desconto
+            let badgeDesconto = '';
+            if (permitidoDesconto) {
+                const textoLower = permitidoDesconto.toLowerCase();
+                if (textoLower.includes('100%')) {
+                    badgeDesconto = '<span class="badge-desconto desconto-100">100%</span>';
+                } else if (textoLower.includes('50%')) {
+                    badgeDesconto = '<span class="badge-desconto desconto-50">50%</span>';
+                } else if (textoLower.includes('sim') || textoLower.includes('liberado')) {
+                    badgeDesconto = '<span class="badge-desconto desconto-sim">Liberado</span>';
+                }
+            }
 
             // HTML Card
             const card = document.createElement('div');
             card.className = 'product-card';
             card.setAttribute('data-search', `${sku} ${produtoObj.Descricao}`.toLowerCase());
-            
+            card.setAttribute('data-categoria', categoria);
+            card.setAttribute('data-desconto', permitidoDesconto.toLowerCase());
+
             card.innerHTML = `
+                <div class="card-header-info">
+                    <span class="badge-categoria">${categoria}</span>
+                    ${badgeDesconto}
+                </div>
                 <div class="sku">SKU: ${sku}</div>
                 <div class="desc">${produtoObj.Descricao}</div>
                 <div class="saldo">Saldo: ${saldo}</div>
@@ -122,16 +243,10 @@ function processarDados(estoque) {
     }
 }
 
-// 3. Função de Pesquisa
-document.getElementById('searchInput').addEventListener('keyup', function(e) {
-    const termo = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('.product-card');
-
-    cards.forEach(card => {
-        const textoCard = card.getAttribute('data-search');
-        card.style.display = textoCard.includes(termo) ? 'block' : 'none';
-    });
-});
+// 3. Funções de Pesquisa e Filtros
+document.getElementById('searchInput').addEventListener('keyup', aplicarFiltros);
+document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltros);
+document.getElementById('filtroDesconto').addEventListener('change', aplicarFiltros);
 
 // 4. Funções de Exportação
 function exportarExcel(dados, nomeArquivo) {
