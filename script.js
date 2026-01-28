@@ -249,28 +249,50 @@ document.getElementById('filtroCategoria').addEventListener('change', aplicarFil
 document.getElementById('filtroDesconto').addEventListener('change', aplicarFiltros);
 
 // 4. Funções de Exportação
-function exportarExcel(dados, nomeArquivo) {
-    if (dados.length === 0) {
-        alert("Não há dados nesta unidade para exportar.");
+function obterDadosFiltrados(listId, dadosOriginais) {
+    const container = document.getElementById(listId);
+    const cardsVisiveis = container.querySelectorAll('.product-card');
+
+    // Coletar SKUs dos cards visíveis
+    const skusVisiveis = [];
+    cardsVisiveis.forEach(card => {
+        if (card.style.display !== 'none') {
+            // Extrair SKU do card
+            const skuText = card.querySelector('.sku').textContent;
+            const sku = skuText.replace('SKU: ', '').trim();
+            skusVisiveis.push(sku);
+        }
+    });
+
+    // Filtrar dados originais pelos SKUs visíveis
+    return dadosOriginais.filter(item => skusVisiveis.includes(item.SKU));
+}
+
+function exportarExcel(listId, dados, nomeArquivo) {
+    // Obter apenas os dados filtrados (visíveis na tela)
+    const dadosFiltrados = obterDadosFiltrados(listId, dados);
+
+    if (dadosFiltrados.length === 0) {
+        alert("Não há dados visíveis nesta unidade para exportar. Verifique os filtros aplicados.");
         return;
     }
-    
+
     // Cria uma nova planilha (Worksheet)
-    const ws = XLSX.utils.json_to_sheet(dados);
-    
+    const ws = XLSX.utils.json_to_sheet(dadosFiltrados);
+
     // Cria um novo arquivo (Workbook)
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Promoções");
-    
+
     // Baixa o arquivo
     XLSX.writeFile(wb, nomeArquivo);
 }
 
 // Event Listeners dos Botões
 document.getElementById('btn-export-13706').addEventListener('click', () => {
-    exportarExcel(dadosPalmeira, "Promocoes_Palmeira_13706.xlsx");
+    exportarExcel('list-13706', dadosPalmeira, "Promocoes_Palmeira_13706.xlsx");
 });
 
 document.getElementById('btn-export-13707').addEventListener('click', () => {
-    exportarExcel(dadosPenedo, "Promocoes_Penedo_13707.xlsx");
+    exportarExcel('list-13707', dadosPenedo, "Promocoes_Penedo_13707.xlsx");
 });
