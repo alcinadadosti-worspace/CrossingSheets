@@ -5,6 +5,20 @@ function obterValorFlexivel(linha, nomeColunaAlvo) {
     return chaveEncontrada ? linha[chaveEncontrada] : undefined;
 }
 
+// Função para buscar descrição com diferentes encodings/variações
+function obterDescricaoFlexivel(linha) {
+    const chaves = Object.keys(linha);
+    // Busca por colunas que contenham "descri" (ignora acentos e encoding)
+    const chaveEncontrada = chaves.find(k => {
+        const chaveLower = k.trim().toLowerCase();
+        return chaveLower.includes('descri') ||
+               chaveLower.includes('descric') ||
+               chaveLower.includes('nome') ||
+               chaveLower === 'description';
+    });
+    return chaveEncontrada ? linha[chaveEncontrada] : undefined;
+}
+
 // Função para preencher o filtro de categorias
 function preencherFiltroCategorias() {
     const selectCategoria = document.getElementById('filtroCategoria');
@@ -171,7 +185,9 @@ function processarDados(estoque) {
         const skuBruto = obterValorFlexivel(item, 'Produto');
         const saldoBruto = obterValorFlexivel(item, 'Saldo Atual');
         const quebraBruto = obterValorFlexivel(item, 'Quebra');
-        const descBruto = obterValorFlexivel(item, 'Descricao') || obterValorFlexivel(item, 'Descrição');
+        const descBruto = obterValorFlexivel(item, 'Descricao')
+                        || obterValorFlexivel(item, 'Descrição')
+                        || obterDescricaoFlexivel(item);
 
         const sku = skuBruto ? String(skuBruto).trim() : null;
         const saldo = parseFloat(saldoBruto);
