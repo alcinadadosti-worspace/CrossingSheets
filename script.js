@@ -159,7 +159,7 @@ document.getElementById('upload').addEventListener('change', (evt) => {
         try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, {type: 'array'});
-            const jsonEstoque = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            const jsonEstoque = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {raw: false});
             
             processarDados(jsonEstoque);
         } catch (err) {
@@ -190,7 +190,7 @@ function processarDados(estoque) {
                         || obterDescricaoFlexivel(item);
 
         const sku = skuBruto ? String(skuBruto).trim() : null;
-        const saldo = parseFloat(saldoBruto);
+        const saldo = parseFloat(typeof saldoBruto === 'string' ? saldoBruto.replace(',', '.') : saldoBruto);
         const quebra = quebraBruto ? String(quebraBruto).trim() : '';
 
         if (sku && promoSKUs.includes(sku) && saldo > 0) {
