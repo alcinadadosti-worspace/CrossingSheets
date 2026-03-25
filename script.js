@@ -159,7 +159,7 @@ document.getElementById('upload').addEventListener('change', (evt) => {
         try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, {type: 'array'});
-            const jsonEstoque = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {raw: false});
+            const jsonEstoque = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
             
             processarDados(jsonEstoque);
         } catch (err) {
