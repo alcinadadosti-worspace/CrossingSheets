@@ -159,8 +159,9 @@ document.getElementById('upload').addEventListener('change', (evt) => {
         try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, {type: 'array'});
-            const jsonEstoque = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-            
+            const ws = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonEstoque = XLSX.utils.sheet_to_json(ws, {raw: false});
+
             processarDados(jsonEstoque);
         } catch (err) {
             alert("Erro ao ler planilha: " + err.message);
@@ -189,8 +190,11 @@ function processarDados(estoque) {
                         || obterValorFlexivel(item, 'Descrição')
                         || obterDescricaoFlexivel(item);
 
-        const sku = skuBruto ? String(skuBruto).trim() : null;
-        const saldo = parseFloat(typeof saldoBruto === 'string' ? saldoBruto.replace(',', '.') : saldoBruto);
+        const skuStr = skuBruto ? String(skuBruto).trim() : null;
+        const skuNum = skuStr ? Number(skuStr) : NaN;
+        const sku = skuStr ? (isNaN(skuNum) ? skuStr : String(skuNum)) : null;
+        const saldoStr = saldoBruto ? String(saldoBruto).replace(',', '.') : '';
+        const saldo = parseFloat(saldoStr);
         const quebra = quebraBruto ? String(quebraBruto).trim() : '';
 
         if (sku && promoSKUs.includes(sku) && saldo > 0) {
