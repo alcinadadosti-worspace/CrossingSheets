@@ -44,7 +44,7 @@ function extrairPercentualDesconto(texto) {
     const textoLower = texto.toLowerCase();
     if (textoLower.includes('100%')) return '100';
     if (textoLower.includes('50%')) return '50';
-    if (textoLower.includes('sim') || textoLower.includes('liberado')) return 'sim';
+    if (textoLower.includes('15%')) return '15';
     return null;
 }
 
@@ -79,7 +79,7 @@ function aplicarFiltros() {
                 visivel = false;
             } else if (descontoFiltro === '50' && !descontoCard.includes('50')) {
                 visivel = false;
-            } else if (descontoFiltro === 'sim' && descontoCard === '') {
+            } else if (descontoFiltro === '15' && !descontoCard.includes('15')) {
                 visivel = false;
             }
         }
@@ -222,8 +222,8 @@ function processarDados(estoque) {
                     badgeDesconto = '<span class="badge-desconto desconto-100">100%</span>';
                 } else if (textoLower.includes('50%')) {
                     badgeDesconto = '<span class="badge-desconto desconto-50">50%</span>';
-                } else if (textoLower.includes('sim') || textoLower.includes('liberado')) {
-                    badgeDesconto = '<span class="badge-desconto desconto-sim">Liberado</span>';
+                } else if (textoLower.includes('15%')) {
+                    badgeDesconto = '<span class="badge-desconto desconto-15">15%</span>';
                 }
             }
 
