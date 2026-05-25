@@ -105,7 +105,11 @@ window.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             const workbook = XLSX.read(data, {type: 'array'});
-            const jsonBD = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            let jsonBD = [];
+            workbook.SheetNames.forEach(sheetName => {
+                const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+                jsonBD = jsonBD.concat(sheetData);
+            });
             
             jsonBD.forEach(item => {
                 let codigo = obterValorFlexivel(item, 'Código Produto');
