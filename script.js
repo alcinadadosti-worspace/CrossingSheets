@@ -177,24 +177,36 @@ document.getElementById('upload').addEventListener('change', (evt) => {
 function processarDados(estoque) {
     const list13706 = document.getElementById('list-13706');
     const list13707 = document.getElementById('list-13707');
-    
+
     // Limpa visualização e dados de exportação
     list13706.innerHTML = '';
     list13707.innerHTML = '';
     dadosPalmeira = [];
     dadosPenedo = [];
-    
+
     let matches = 0;
 
     estoque.forEach(item => {
         const skuBruto = obterValorFlexivel(item, 'Produto');
-        const saldoBruto = obterValorFlexivel(item, 'Saldo Atual');
-        const quebraBruto = obterValorFlexivel(item, 'Quebra');
-        const descBruto = obterValorFlexivel(item, 'Descricao')
-                        || obterValorFlexivel(item, 'Descrição')
-                        || obterDescricaoFlexivel(item);
+        const saldoBruto = obterValorFlexivel(item, 'Saldo Atual')
+                        || obterValorFlexivel(item, 'Estoque Final');
+        const quebraBruto = obterValorFlexivel(item, 'Quebra')
+                         || obterValorFlexivel(item, 'Loja');
+        let descBruto = obterValorFlexivel(item, 'Descricao')
+                      || obterValorFlexivel(item, 'Descrição')
+                      || obterDescricaoFlexivel(item);
 
-        const skuStr = skuBruto ? String(skuBruto).trim() : null;
+        let skuStr = skuBruto ? String(skuBruto).trim() : null;
+
+        // Formato "00000000000002 - Descrição": extrair SKU e descrição
+        if (skuStr && skuStr.includes(' - ')) {
+            const partes = skuStr.split(' - ');
+            skuStr = partes[0].trim();
+            if (!descBruto) {
+                descBruto = partes.slice(1).join(' - ').trim();
+            }
+        }
+
         const skuNum = skuStr ? Number(skuStr) : NaN;
         const sku = skuStr ? (isNaN(skuNum) ? skuStr : String(skuNum)) : null;
         const saldoStr = saldoBruto ? String(saldoBruto).replace(',', '.') : '';
