@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificador de Estoque Promocional</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -29,8 +29,17 @@
             </label>
         </div>
 
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="principal">📊 Promoções do Ciclo</button>
+            <button class="tab-btn" data-tab="recomposicao">
+                🧩 Promoções à Parte <span class="tab-count" id="tab-count-recomp"></span>
+            </button>
+        </nav>
+
+        <section class="tab-panel active" id="panel-principal">
+
         <div id="results" class="results-container hidden">
-            
+
             <div class="filters-container">
                 <div class="search-bar">
                     <input type="text" id="searchInput" placeholder="🔍 Pesquisar SKU ou Nome do produto...">
@@ -83,8 +92,92 @@
             </div>
         </div>
 
+        </section>
+
+        <section class="tab-panel" id="panel-recomposicao">
+
+            <div class="recomp-intro">
+                <h2>Promoções à Parte — Recomposição de Estoque</h2>
+                <p>Lista extra de SKUs promocionados nos próximos ciclos (C13). Serve apenas para conferir se cada item existe no estoque importado e em que quantidade — não interfere na conferência do ciclo vigente.</p>
+                <div id="status-recomp" class="status-line">⏳ Carregando lista de promoções à parte...</div>
+            </div>
+
+            <p class="empty-msg" id="recomp-placeholder">Importe a planilha de estoque acima para cruzar os SKUs.</p>
+
+            <div id="recomp-content" class="hidden">
+
+                <div class="resumo-cards">
+                    <div class="resumo-card resumo-ok">
+                        <span class="resumo-num" id="recomp-com">0</span>
+                        <small>Com estoque</small>
+                    </div>
+                    <div class="resumo-card resumo-no">
+                        <span class="resumo-num" id="recomp-sem">0</span>
+                        <small>Sem estoque</small>
+                    </div>
+                    <div class="resumo-card resumo-total">
+                        <span class="resumo-num" id="recomp-total">0</span>
+                        <small>SKUs na lista</small>
+                    </div>
+                </div>
+
+                <div class="filters-container">
+                    <div class="search-bar">
+                        <input type="text" id="recompSearch" placeholder="🔍 Pesquisar SKU ou Nome do produto...">
+                    </div>
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label for="recompFiltroAcao">Ação:</label>
+                            <select id="recompFiltroAcao">
+                                <option value="">Todas as Ações</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="recompFiltroStatus">Situação:</label>
+                            <select id="recompFiltroStatus">
+                                <option value="">Todos</option>
+                                <option value="com">Só com estoque</option>
+                                <option value="sem">Só sem estoque</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="unit-section" id="recomp-section">
+                    <div class="unit-header">
+                        <div class="header-title">
+                            <h2>Cruzamento com o estoque</h2>
+                        </div>
+                        <button id="btn-export-recomp" class="btn-export">📥 Excel</button>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="recomp-table">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Descrição</th>
+                                    <th>Ação</th>
+                                    <th>Palmeira <small>13706</small></th>
+                                    <th>Penedo <small>13707</small></th>
+                                    <th>Total</th>
+                                    <th>Situação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recomp-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <p class="empty-msg" id="recomp-msg-vazio" style="display: none;">Nenhum item corresponde aos filtros.</p>
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
 
     <script src="script.js?v=6"></script>
+    <script src="recomposicao.js?v=1"></script>
 </body>
 </html>

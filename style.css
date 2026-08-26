@@ -277,3 +277,207 @@ main {
         flex: 1;
     }
 }
+
+/* =========================================================
+   Abas (Promoções do Ciclo / Promoções à Parte)
+   ========================================================= */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin: 25px 0 20px;
+    border-bottom: 2px solid #e6e6e6;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    padding: 12px 18px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-btn:hover { color: var(--text-dark); }
+
+.tab-btn.active {
+    color: var(--dark-pink);
+    border-bottom-color: var(--primary-pink);
+}
+
+.tab-count:empty { display: none; }
+
+.tab-count {
+    display: inline-block;
+    background: var(--primary-green);
+    color: var(--dark-green);
+    font-size: 0.7rem;
+    padding: 1px 8px;
+    border-radius: 20px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Introdução da aba de recomposição */
+.recomp-intro { margin-bottom: 20px; }
+.recomp-intro h2 { margin: 0 0 6px; font-size: 1.2rem; }
+.recomp-intro p {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    color: #777;
+    line-height: 1.5;
+    max-width: 750px;
+}
+
+.status-line {
+    font-weight: bold;
+    color: #558b2f;
+    font-size: 0.9rem;
+}
+
+.status-line.status-erro { color: #c62828; }
+
+#panel-recomposicao .empty-msg {
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    padding: 20px 0;
+}
+
+/* Cards de resumo */
+.resumo-cards {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.resumo-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: var(--shadow);
+    border-left: 5px solid #ddd;
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+}
+
+.resumo-card small {
+    display: block;
+    color: #888;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resumo-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.resumo-ok { border-left-color: #7cb342; }
+.resumo-ok .resumo-num { color: var(--dark-green); }
+
+.resumo-no { border-left-color: #ef9a9a; }
+.resumo-no .resumo-num { color: #c62828; }
+
+.resumo-total { border-left-color: var(--primary-pink); }
+.resumo-total .resumo-num { color: var(--dark-pink); }
+
+/* Tabela do cruzamento */
+#recomp-section { border-top-color: var(--primary-pink); }
+
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.recomp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 700px;
+}
+
+.recomp-table thead th {
+    text-align: left;
+    padding: 10px 12px;
+    background: #fafafa;
+    border-bottom: 2px solid #eee;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #888;
+    white-space: nowrap;
+}
+
+.recomp-table thead th small {
+    display: block;
+    font-weight: 400;
+    text-transform: none;
+    color: #bbb;
+}
+
+.recomp-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.recomp-table tbody tr:hover { background: #fafafa; }
+
+.linha-nao-tem { opacity: 0.65; }
+
+.col-sku { font-weight: bold; color: #666; white-space: nowrap; }
+.col-desc { color: #333; line-height: 1.3; min-width: 220px; }
+.col-qtd { text-align: center; white-space: nowrap; }
+.col-situacao { white-space: nowrap; }
+
+.badge-acao {
+    display: inline-block;
+    background: linear-gradient(135deg, #e1bee7, #ce93d8);
+    color: #4a148c;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.qtd-pill {
+    display: inline-block;
+    min-width: 42px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.qtd-ok {
+    background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+    color: #1b5e20;
+}
+
+.qtd-zero {
+    background: #f2f2f2;
+    color: #bbb;
+}
+
+.situacao { font-weight: 600; font-size: 0.8rem; }
+.situacao-ok { color: var(--dark-green); }
+.situacao-no { color: #c62828; }
+
+@media (max-width: 768px) {
+    .tab-btn { padding: 10px 12px; font-size: 0.85rem; }
+    .resumo-card { padding: 0.8rem; }
+}
