@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificador de Estoque Promocional</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -33,6 +33,9 @@
             <button class="tab-btn active" data-tab="principal">📊 Promoções do Ciclo</button>
             <button class="tab-btn" data-tab="recomposicao">
                 🧩 Promoções à Parte <span class="tab-count" id="tab-count-recomp"></span>
+            </button>
+            <button class="tab-btn" data-tab="botrecicla">
+                ♻️ BotRecicla <span class="tab-count" id="tab-count-boti"></span>
             </button>
         </nav>
 
@@ -175,9 +178,91 @@
 
         </section>
 
+        <section class="tab-panel" id="panel-botrecicla">
+
+            <div class="recomp-intro">
+                <h2>BotRecicla — Lista Flex</h2>
+                <p>Lista de SKUs do BotRecicla. Serve apenas para conferir quais desses itens existem no estoque importado e em que quantidade — não interfere na conferência do ciclo vigente.</p>
+                <div id="status-botrecicla" class="status-line">⏳ Carregando lista do BotRecicla...</div>
+            </div>
+
+            <p class="empty-msg" id="bot-placeholder">Importe a planilha de estoque acima para cruzar os SKUs.</p>
+
+            <div id="bot-content" class="hidden">
+
+                <div class="resumo-cards">
+                    <div class="resumo-card resumo-ok">
+                        <span class="resumo-num" id="bot-com">0</span>
+                        <small>Com estoque</small>
+                    </div>
+                    <div class="resumo-card resumo-no">
+                        <span class="resumo-num" id="bot-sem">0</span>
+                        <small>Sem estoque</small>
+                    </div>
+                    <div class="resumo-card resumo-total">
+                        <span class="resumo-num" id="bot-total">0</span>
+                        <small>SKUs na lista</small>
+                    </div>
+                </div>
+
+                <div class="filters-container">
+                    <div class="search-bar">
+                        <input type="text" id="botSearch" placeholder="🔍 Pesquisar SKU ou Nome do produto...">
+                    </div>
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label for="botFiltroMarca">Marca:</label>
+                            <select id="botFiltroMarca">
+                                <option value="">Todas as Marcas</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="botFiltroStatus">Situação:</label>
+                            <select id="botFiltroStatus">
+                                <option value="com" selected>Só com estoque</option>
+                                <option value="sem">Só sem estoque</option>
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="unit-section" id="bot-section">
+                    <div class="unit-header">
+                        <div class="header-title">
+                            <h2>Cruzamento com o estoque</h2>
+                        </div>
+                        <button id="btn-export-bot" class="btn-export">📥 Excel</button>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="recomp-table">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Descrição</th>
+                                    <th>Marca</th>
+                                    <th>Palmeira <small>13706</small></th>
+                                    <th>Penedo <small>13707</small></th>
+                                    <th>Total</th>
+                                    <th>Situação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bot-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <p class="empty-msg" id="bot-msg-vazio" style="display: none;">Nenhum item corresponde aos filtros.</p>
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
 
     <script src="script.js?v=6"></script>
     <script src="recomposicao.js?v=1"></script>
+    <script src="botrecicla.js?v=1"></script>
 </body>
 </html>

@@ -345,7 +345,8 @@ main {
 
 .status-line.status-erro { color: #c62828; }
 
-#panel-recomposicao .empty-msg {
+#panel-recomposicao .empty-msg,
+#panel-botrecicla .empty-msg {
     text-align: center;
     color: #999;
     font-size: 0.9rem;
@@ -396,6 +397,13 @@ main {
 
 /* Tabela do cruzamento */
 #recomp-section { border-top-color: var(--primary-pink); }
+#bot-section { border-top-color: #a5d6a7; }
+
+#bot-section .btn-export:hover {
+    background-color: var(--primary-green);
+    border-color: var(--dark-green);
+    color: var(--dark-green);
+}
 
 .table-wrapper {
     overflow-x: auto;
@@ -452,6 +460,35 @@ main {
     font-size: 0.65rem;
     font-weight: 600;
     line-height: 1.4;
+}
+
+/* Selo de marca (aba BotRecicla) */
+.col-marca { white-space: nowrap; }
+
+.badge-marca {
+    display: inline-block;
+    background: #eee;
+    color: #666;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.marca-boti {
+    background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+    color: #1b5e20;
+}
+
+.marca-eudora {
+    background: linear-gradient(135deg, #f8bbd0, #f48fb1);
+    color: #880e4f;
+}
+
+.marca-qdb {
+    background: linear-gradient(135deg, #e1bee7, #ce93d8);
+    color: #4a148c;
 }
 
 .qtd-pill {
