@@ -332,3 +332,14 @@ document.getElementById('btn-export-13706').addEventListener('click', () => {
 document.getElementById('btn-export-13707').addEventListener('click', () => {
     exportarExcel('list-13707', dadosPenedo, "Promocoes_Penedo_13707.xlsx");
 });
+
+// 5. Abas (Promoções do Ciclo / BotRecicla)
+document.querySelectorAll('.tab-btn').forEach(botao => {
+    botao.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+        botao.classList.add('active');
+        document.getElementById('panel-' + botao.dataset.tab).classList.add('active');
+    });
+});

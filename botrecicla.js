@@ -5,10 +5,10 @@
    importada na aba principal, apenas para dizer quais itens da lista
    existem no estoque e em que quantidade.
 
-   Autocontido: não altera nem depende de nada do script.js nem do
-   recomposicao.js. A única ligação é ouvir o mesmo input de upload da
-   planilha de estoque. (A troca de abas é tratada pelo recomposicao.js,
-   que já percorre todos os .tab-btn / .tab-panel da página.)
+   Autocontido: não altera nem depende de nada do script.js. A única
+   ligação é ouvir o mesmo input de upload da planilha de estoque. (A troca
+   de abas é tratada pelo script.js, que percorre todos os .tab-btn /
+   .tab-panel da página.)
    ========================================================================= */
 (function () {
     'use strict';
@@ -352,7 +352,7 @@
         el('botFiltroStatus').addEventListener('change', renderizar);
         el('btn-export-bot').addEventListener('click', exportar);
 
-        // Mesmo arquivo de estoque das outras abas, lido de forma independente
+        // Mesmo arquivo de estoque da aba principal, lido de forma independente
         el('upload').addEventListener('change', evt => {
             const arquivo = evt.target.files[0];
             if (!arquivo) return;
