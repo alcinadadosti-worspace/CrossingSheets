@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificador de Estoque Promocional</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=6">
+    <link rel="stylesheet" href="style.css?v=7">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
     <header>
-        <div class="ciclo-badge">🟢 PLANILHA CICLO 15 ATIVA</div>
+        <div class="ciclo-badge">🟢 PLANILHA CICLO 16 ATIVA</div>
         <h1>Conferência de Promoções</h1>
         <p>Cruze seu estoque com a base de promoções vigente</p>
     </header>
@@ -46,6 +46,12 @@
                 </div>
                 <div class="filters-row">
                     <div class="filter-group">
+                        <label for="filtroMarca">Marca:</label>
+                        <select id="filtroMarca">
+                            <option value="">Todas as Marcas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
                         <label for="filtroCategoria">Categoria:</label>
                         <select id="filtroCategoria">
                             <option value="">Todas as Categorias</option>
@@ -57,6 +63,7 @@
                             <option value="">Todos</option>
                             <option value="100">Liberado até 100%</option>
                             <option value="50">Liberado até 50%</option>
+                            <option value="30">Liberado até 30%</option>
                             <option value="15">Liberado até 15%</option>
                         </select>
                     </div>
@@ -64,7 +71,7 @@
             </div>
 
             <div class="units-wrapper">
-                
+
                 <section class="unit-section" id="palmeira-section">
                     <div class="unit-header">
                         <div class="header-title">
@@ -177,7 +184,7 @@
 
     </main>
 
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=8"></script>
     <script src="botrecicla.js?v=2"></script>
 </body>
 </html>

@@ -19,38 +19,41 @@ function obterDescricaoFlexivel(linha) {
     return chaveEncontrada ? linha[chaveEncontrada] : undefined;
 }
 
-// Função para preencher o filtro de categorias
-function preencherFiltroCategorias() {
-    const selectCategoria = document.getElementById('filtroCategoria');
-    if (!selectCategoria) return;
+// Preenche um <select> com os valores de um Set, em ordem alfabética
+function preencherSelect(idSelect, rotuloTodos, valores) {
+    const select = document.getElementById(idSelect);
+    if (!select) return;
 
-    // Limpar opções existentes (exceto a primeira)
-    selectCategoria.innerHTML = '<option value="">Todas as Categorias</option>';
+    select.innerHTML = `<option value="">${rotuloTodos}</option>`;
 
-    // Ordenar categorias alfabeticamente
-    const categoriasOrdenadas = Array.from(categoriasDisponiveis).sort();
-
-    categoriasOrdenadas.forEach(cat => {
+    Array.from(valores).sort().forEach(valor => {
         const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        selectCategoria.appendChild(option);
+        option.value = valor;
+        option.textContent = valor;
+        select.appendChild(option);
     });
 }
 
-// Função para extrair o percentual do texto de desconto
+// Escapa texto vindo das planilhas antes de inserir no HTML (ex.: "(<= 100 dias)")
+function escaparHtml(texto) {
+    return String(texto)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+// Extrai o percentual liberado ("Sim - Até 30%" -> "30"); bloqueados não têm percentual
 function extrairPercentualDesconto(texto) {
     if (!texto) return null;
-    const textoLower = texto.toLowerCase();
-    if (textoLower.includes('100%')) return '100';
-    if (textoLower.includes('50%')) return '50';
-    if (textoLower.includes('15%')) return '15';
-    return null;
+    const achado = String(texto).match(/(\d+)\s*%/);
+    return achado ? achado[1] : null;
 }
 
 // Função para aplicar todos os filtros
 function aplicarFiltros() {
     const termoBusca = document.getElementById('searchInput').value.toLowerCase();
+    const marcaFiltro = document.getElementById('filtroMarca').value;
     const categoriaFiltro = document.getElementById('filtroCategoria').value;
     const descontoFiltro = document.getElementById('filtroDesconto').value;
 
@@ -58,8 +61,9 @@ function aplicarFiltros() {
 
     cards.forEach(card => {
         const textoCard = card.getAttribute('data-search');
+        const marcaCard = card.getAttribute('data-marca');
         const categoriaCard = card.getAttribute('data-categoria');
-        const descontoCard = card.getAttribute('data-desconto');
+        const percentualCard = card.getAttribute('data-percentual');
 
         let visivel = true;
 
@@ -68,20 +72,19 @@ function aplicarFiltros() {
             visivel = false;
         }
 
+        // Filtro de marca
+        if (marcaFiltro && marcaCard !== marcaFiltro) {
+            visivel = false;
+        }
+
         // Filtro de categoria
         if (categoriaFiltro && categoriaCard !== categoriaFiltro) {
             visivel = false;
         }
 
-        // Filtro de desconto
-        if (descontoFiltro) {
-            if (descontoFiltro === '100' && !descontoCard.includes('100')) {
-                visivel = false;
-            } else if (descontoFiltro === '50' && !descontoCard.includes('50')) {
-                visivel = false;
-            } else if (descontoFiltro === '15' && !descontoCard.includes('15')) {
-                visivel = false;
-            }
+        // Filtro de desconto (percentual exato liberado)
+        if (descontoFiltro && percentualCard !== descontoFiltro) {
+            visivel = false;
         }
 
         card.style.display = visivel ? 'block' : 'none';
@@ -93,7 +96,8 @@ let promoDados = {}; // Armazena dados completos do BD (Categoria, Permitido des
 // Arrays para armazenar os dados prontos para exportação
 let dadosPalmeira = [];
 let dadosPenedo = [];
-// Lista de categorias únicas para o filtro
+// Listas de marcas e categorias únicas para os filtros
+let marcasDisponiveis = new Set();
 let categoriasDisponiveis = new Set();
 
 // 1. Carregar BD
@@ -119,6 +123,11 @@ window.addEventListener('DOMContentLoaded', () => {
                     const sku = String(codigo).trim();
                     promoSKUs.push(sku);
 
+                    // Buscar Marca (BOTICARIO, EUDORA, OUI, QDB, AUMIGOS, AMOSTRAS...)
+                    let marca = obterValorFlexivel(item, 'Marca') || 'Sem marca';
+                    marca = String(marca).trim();
+                    marcasDisponiveis.add(marca);
+
                     // Buscar Categoria
                     let categoria = obterValorFlexivel(item, 'Categoria') || 'Sem categoria';
                     categoria = String(categoria).trim();
@@ -130,15 +139,25 @@ window.addEventListener('DOMContentLoaded', () => {
                                  || '';
                     permitido = String(permitido).trim();
 
+                    // Motivo da liberação/bloqueio (coluna nova a partir do ciclo 16)
+                    let observacao = obterValorFlexivel(item, 'Observação regra') || '';
+                    observacao = String(observacao).trim();
+
+                    const descricao = obterValorFlexivel(item, 'Descrição Produto') || '';
+
                     promoDados[sku] = {
+                        marca: marca,
                         categoria: categoria,
-                        permitidoDesconto: permitido
+                        permitidoDesconto: permitido,
+                        observacao: observacao,
+                        descricao: String(descricao).trim()
                     };
                 }
             });
 
-            // Preencher filtro de categorias
-            preencherFiltroCategorias();
+            // Preencher filtros de marca e categoria
+            preencherSelect('filtroMarca', 'Todas as Marcas', marcasDisponiveis);
+            preencherSelect('filtroCategoria', 'Todas as Categorias', categoriasDisponiveis);
 
             document.getElementById('status-bd').textContent = `✅ Banco de dados carregado (${promoSKUs.length} produtos)`;
         })
@@ -183,6 +202,9 @@ function processarDados(estoque) {
     list13707.innerHTML = '';
     dadosPalmeira = [];
     dadosPenedo = [];
+    // Volta a mostrar "Nenhum item encontrado" até aparecer um item da unidade
+    document.getElementById('msg-13706').style.display = '';
+    document.getElementById('msg-13707').style.display = '';
 
     let matches = 0;
 
@@ -213,50 +235,50 @@ function processarDados(estoque) {
         const saldo = parseFloat(saldoStr);
         const quebra = quebraBruto ? String(quebraBruto).trim() : '';
 
-        if (sku && promoSKUs.includes(sku) && saldo > 0) {
+        if (sku && Object.hasOwn(promoDados, sku) && saldo > 0) {
             matches++;
 
             // Buscar dados adicionais do BD
-            const dadosBD = promoDados[sku] || { categoria: 'Sem categoria', permitidoDesconto: '' };
-            const categoria = dadosBD.categoria;
-            const permitidoDesconto = dadosBD.permitidoDesconto;
+            const dadosBD = promoDados[sku];
+            const { marca, categoria, permitidoDesconto, observacao } = dadosBD;
+            const percentual = extrairPercentualDesconto(permitidoDesconto);
 
             // Objeto limpo para o Excel e para o Card
             const produtoObj = {
                 SKU: sku,
-                Descricao: descBruto || 'Item Promocional',
+                Descricao: descBruto || dadosBD.descricao || 'Item Promocional',
                 Saldo: saldo,
+                Marca: marca,
                 Categoria: categoria,
-                'Permitido Desconto/Brinde': permitidoDesconto
+                'Permitido Desconto/Brinde': permitidoDesconto,
+                'Observação Regra': observacao
             };
 
-            // Determinar badge de desconto
-            let badgeDesconto = '';
-            if (permitidoDesconto) {
-                const textoLower = permitidoDesconto.toLowerCase();
-                if (textoLower.includes('100%')) {
-                    badgeDesconto = '<span class="badge-desconto desconto-100">100%</span>';
-                } else if (textoLower.includes('50%')) {
-                    badgeDesconto = '<span class="badge-desconto desconto-50">50%</span>';
-                } else if (textoLower.includes('15%')) {
-                    badgeDesconto = '<span class="badge-desconto desconto-15">15%</span>';
-                }
-            }
+            // Badge de desconto só para itens liberados (com percentual)
+            const badgeDesconto = percentual
+                ? `<span class="badge-desconto desconto-${percentual}">${percentual}%</span>`
+                : '';
+            const badgeCategoria = categoria !== 'Sem categoria'
+                ? `<span class="badge-categoria">${escaparHtml(categoria)}</span>`
+                : '';
 
             // HTML Card
             const card = document.createElement('div');
             card.className = 'product-card';
             card.setAttribute('data-search', `${sku} ${produtoObj.Descricao}`.toLowerCase());
+            card.setAttribute('data-marca', marca);
             card.setAttribute('data-categoria', categoria);
-            card.setAttribute('data-desconto', permitidoDesconto.toLowerCase());
+            card.setAttribute('data-percentual', percentual || '');
 
             card.innerHTML = `
                 <div class="card-header-info">
-                    <span class="badge-categoria">${categoria}</span>
+                    <span class="badge-marca-promo">${escaparHtml(marca)}</span>
+                    ${badgeCategoria}
                     ${badgeDesconto}
                 </div>
-                <div class="sku">SKU: ${sku}</div>
-                <div class="desc">${produtoObj.Descricao}</div>
+                <div class="sku">SKU: ${escaparHtml(sku)}</div>
+                <div class="desc">${escaparHtml(produtoObj.Descricao)}</div>
+                ${observacao ? `<div class="obs-regra">${escaparHtml(observacao)}</div>` : ''}
                 <div class="saldo">Saldo: ${saldo}</div>
             `;
 
@@ -274,6 +296,9 @@ function processarDados(estoque) {
 
     document.getElementById('results').classList.remove('hidden');
 
+    // Mantém os filtros já escolhidos valendo para os cards novos
+    aplicarFiltros();
+
     if (matches === 0) {
         alert("Nenhum item do estoque bateu com a lista de promoções.");
     }
@@ -281,6 +306,7 @@ function processarDados(estoque) {
 
 // 3. Funções de Pesquisa e Filtros
 document.getElementById('searchInput').addEventListener('keyup', aplicarFiltros);
+document.getElementById('filtroMarca').addEventListener('change', aplicarFiltros);
 document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltros);
 document.getElementById('filtroDesconto').addEventListener('change', aplicarFiltros);
 
