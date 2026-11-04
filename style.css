@@ -530,3 +530,72 @@ main {
     .tab-btn { padding: 10px 12px; font-size: 0.85rem; }
     .resumo-card { padding: 0.8rem; }
 }
+/* =========================================================
+   Aba Beauty Week
+   ========================================================= */
+#panel-beautyweek .empty-msg {
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    padding: 20px 0;
+}
+
+#bw-section { border-top-color: var(--primary-pink); }
+
+#bw-section .btn-export:hover {
+    background-color: var(--primary-pink);
+    border-color: var(--dark-pink);
+    color: var(--dark-pink);
+}
+
+.resumo-futuro { border-left-color: #ffb74d; }
+.resumo-futuro .resumo-num { color: #e65100; }
+
+.bw-table { min-width: 980px; }
+
+.bw-table .col-desc small {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.7rem;
+    color: #999;
+}
+
+.col-periodo,
+.col-vigencia,
+.col-desconto { white-space: nowrap; }
+
+.col-vigencia { color: #555; font-weight: 600; }
+
+.marca-oui {
+    background: linear-gradient(135deg, #ffecb3, #ffd54f);
+    color: #6d4c00;
+}
+
+.vig-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.vig-ativa {
+    background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+    color: #1b5e20;
+}
+
+.vig-futura {
+    background: linear-gradient(135deg, #ffe0b2, #ffcc80);
+    color: #e65100;
+}
+
+.vig-encerrada {
+    background: #f2f2f2;
+    color: #999;
+}
+
+.bw-desconto {
+    font-weight: 700;
+    color: var(--dark-pink);
+    font-size: 0.8rem;
+}

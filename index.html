@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificador de Estoque Promocional</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -33,6 +33,9 @@
             <button class="tab-btn active" data-tab="principal">📊 Promoções do Ciclo</button>
             <button class="tab-btn" data-tab="botrecicla">
                 ♻️ BotRecicla <span class="tab-count" id="tab-count-boti"></span>
+            </button>
+            <button class="tab-btn" data-tab="beautyweek">
+                💄 Beauty Week <span class="tab-count" id="tab-count-bw"></span>
             </button>
         </nav>
 
@@ -182,9 +185,113 @@
 
         </section>
 
+        <section class="tab-panel" id="panel-beautyweek">
+
+            <div class="recomp-intro">
+                <h2>Beauty Week 2026</h2>
+                <p>Itens da Beauty Week de O Boticário, QDB, O.U.I e Eudora (VD), com o período e as datas em que cada promoção vale. Cruza com a mesma planilha de estoque importada acima para mostrar o que já está valendo hoje e o que entra em promoção nos próximos dias.</p>
+                <div id="status-bw" class="status-line">⏳ Carregando lista da Beauty Week...</div>
+            </div>
+
+            <p class="empty-msg" id="bw-placeholder">Importe a planilha de estoque acima para cruzar os SKUs.</p>
+
+            <div id="bw-content" class="hidden">
+
+                <div class="resumo-cards">
+                    <div class="resumo-card resumo-ok">
+                        <span class="resumo-num" id="bw-hoje">0</span>
+                        <small>Com estoque · valendo hoje</small>
+                    </div>
+                    <div class="resumo-card resumo-futuro">
+                        <span class="resumo-num" id="bw-depois">0</span>
+                        <small>Com estoque · começam depois</small>
+                    </div>
+                    <div class="resumo-card resumo-no">
+                        <span class="resumo-num" id="bw-sem">0</span>
+                        <small>Sem estoque</small>
+                    </div>
+                    <div class="resumo-card resumo-total">
+                        <span class="resumo-num" id="bw-total">0</span>
+                        <small>SKUs na lista</small>
+                    </div>
+                </div>
+
+                <div class="filters-container">
+                    <div class="search-bar">
+                        <input type="text" id="bwSearch" placeholder="🔍 Pesquisar SKU, nome do produto ou submarca...">
+                    </div>
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label for="bwFiltroMarca">Marca:</label>
+                            <select id="bwFiltroMarca">
+                                <option value="">Todas as Marcas</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="bwFiltroPeriodo">Período:</label>
+                            <select id="bwFiltroPeriodo">
+                                <option value="">Todos os Períodos</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="bwFiltroVigencia">Vigência:</label>
+                            <select id="bwFiltroVigencia">
+                                <option value="">Todas</option>
+                                <option value="ativa">Valendo hoje</option>
+                                <option value="futura">Começam depois</option>
+                                <option value="encerrada">Encerradas</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="bwFiltroEstoque">Estoque:</label>
+                            <select id="bwFiltroEstoque">
+                                <option value="com" selected>Só com estoque</option>
+                                <option value="sem">Só sem estoque</option>
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="unit-section" id="bw-section">
+                    <div class="unit-header">
+                        <div class="header-title">
+                            <h2>Cruzamento com o estoque</h2>
+                        </div>
+                        <button id="btn-export-bw" class="btn-export">📥 Excel</button>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="recomp-table bw-table">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Descrição</th>
+                                    <th>Marca</th>
+                                    <th>Período</th>
+                                    <th>Vigência</th>
+                                    <th>Situação</th>
+                                    <th>Desconto</th>
+                                    <th>Palmeira <small>13706</small></th>
+                                    <th>Penedo <small>13707</small></th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bw-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <p class="empty-msg" id="bw-msg-vazio" style="display: none;">Nenhum item corresponde aos filtros.</p>
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
 
     <script src="script.js?v=8"></script>
     <script src="botrecicla.js?v=2"></script>
+    <script src="beautyweek.js?v=1"></script>
 </body>
 </html>
