@@ -50,12 +50,22 @@ function extrairPercentualDesconto(texto) {
     return achado ? achado[1] : null;
 }
 
+// Alerta de Beauty Week (beautyweek.js) para itens que o +L+B não bloqueia por
+// "Promocionado": liberados para desconto/brinde ou bloqueados por Curva A,
+// mas que estão (ou vão entrar) em promoção na Beauty Week.
+function obterAlertasBW(sku, permitidoDesconto) {
+    if (!window.BeautyWeek) return [];
+    if (/promocionado/i.test(permitidoDesconto)) return [];
+    return window.BeautyWeek.alertasSku(sku);
+}
+
 // Função para aplicar todos os filtros
 function aplicarFiltros() {
     const termoBusca = document.getElementById('searchInput').value.toLowerCase();
     const marcaFiltro = document.getElementById('filtroMarca').value;
     const categoriaFiltro = document.getElementById('filtroCategoria').value;
     const descontoFiltro = document.getElementById('filtroDesconto').value;
+    const bwFiltro = document.getElementById('filtroBW').value;
 
     const cards = document.querySelectorAll('.product-card');
 
@@ -84,6 +94,11 @@ function aplicarFiltros() {
 
         // Filtro de desconto (percentual exato liberado)
         if (descontoFiltro && percentualCard !== descontoFiltro) {
+            visivel = false;
+        }
+
+        // Filtro de alerta da Beauty Week
+        if (bwFiltro === 'alerta' && card.getAttribute('data-alerta-bw') !== '1') {
             visivel = false;
         }
 
@@ -185,7 +200,11 @@ document.getElementById('upload').addEventListener('change', (evt) => {
             const ws = workbook.Sheets[workbook.SheetNames[0]];
             const jsonEstoque = XLSX.utils.sheet_to_json(ws, {raw: false});
 
-            processarDados(jsonEstoque);
+            // Espera a lista da Beauty Week (para os alertas); se ela falhar, segue sem alerta
+            const bwPronto = window.BeautyWeek ? window.BeautyWeek.pronto : Promise.resolve(false);
+            bwPronto
+                .then(() => processarDados(jsonEstoque))
+                .catch(err => alert("Erro ao processar planilha: " + err.message));
         } catch (err) {
             alert("Erro ao ler planilha: " + err.message);
         }
@@ -242,6 +261,7 @@ function processarDados(estoque) {
             const dadosBD = promoDados[sku];
             const { marca, categoria, permitidoDesconto, observacao } = dadosBD;
             const percentual = extrairPercentualDesconto(permitidoDesconto);
+            const alertasBW = obterAlertasBW(sku, permitidoDesconto);
 
             // Objeto limpo para o Excel e para o Card
             const produtoObj = {
@@ -251,7 +271,8 @@ function processarDados(estoque) {
                 Marca: marca,
                 Categoria: categoria,
                 'Permitido Desconto/Brinde': permitidoDesconto,
-                'Observação Regra': observacao
+                'Observação Regra': observacao,
+                'Alerta Beauty Week': alertasBW.join(' | ')
             };
 
             // Badge de desconto só para itens liberados (com percentual)
@@ -269,6 +290,11 @@ function processarDados(estoque) {
             card.setAttribute('data-marca', marca);
             card.setAttribute('data-categoria', categoria);
             card.setAttribute('data-percentual', percentual || '');
+            card.setAttribute('data-alerta-bw', alertasBW.length ? '1' : '');
+
+            const blocoAlertaBW = alertasBW.length
+                ? `<div class="alerta-bw">${alertasBW.map(a => `<span>⚠️ ${escaparHtml(a)}</span>`).join('')}</div>`
+                : '';
 
             card.innerHTML = `
                 <div class="card-header-info">
@@ -279,6 +305,7 @@ function processarDados(estoque) {
                 <div class="sku">SKU: ${escaparHtml(sku)}</div>
                 <div class="desc">${escaparHtml(produtoObj.Descricao)}</div>
                 ${observacao ? `<div class="obs-regra">${escaparHtml(observacao)}</div>` : ''}
+                ${blocoAlertaBW}
                 <div class="saldo">Saldo: ${saldo}</div>
             `;
 
@@ -309,6 +336,7 @@ document.getElementById('searchInput').addEventListener('keyup', aplicarFiltros)
 document.getElementById('filtroMarca').addEventListener('change', aplicarFiltros);
 document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltros);
 document.getElementById('filtroDesconto').addEventListener('change', aplicarFiltros);
+document.getElementById('filtroBW').addEventListener('change', aplicarFiltros);
 
 // 4. Funções de Exportação
 function obterDadosFiltrados(listId, dadosOriginais) {

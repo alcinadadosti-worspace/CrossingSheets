@@ -12,8 +12,13 @@
    Submarca | Categoria | Mecânica | Período | Início | Fim | Desconto % |
    Desconto
 
-   Autocontido: não altera nem depende do script.js nem do botrecicla.js.
-   A única ligação é ouvir o mesmo input de upload da planilha de estoque.
+   Não depende do script.js nem do botrecicla.js: ouve o mesmo input de
+   upload da planilha de estoque. Expõe window.BeautyWeek para a aba
+   "Promoções do Ciclo" mostrar o alerta de Beauty Week nos cards:
+     - BeautyWeek.pronto: Promise que resolve true quando a lista carregou
+       (false se falhou) — nunca rejeita
+     - BeautyWeek.alertasSku(sku): textos das promoções da BW ainda por
+       vir ou valendo hoje para o SKU ([] se não estiver na BW)
    ========================================================================= */
 (function () {
     'use strict';
@@ -33,8 +38,12 @@
     const DIA_MS = 24 * 60 * 60 * 1000;
 
     let itensBW = [];            // uma linha por promoção (um SKU pode ter mais de uma)
+    let itensPorSku = new Map(); // sku -> [promoções]
     let linhasCruzadas = [];     // itensBW + quantidades, total, temEstoque, situacao
     let estoquePendente = null;  // estoque importado antes da lista terminar de carregar
+
+    let resolverPronto;
+    const pronto = new Promise(resolve => { resolverPronto = resolve; });
 
     // --- Funções Auxiliares ---
     function el(id) {
@@ -169,6 +178,13 @@
 
                 if (itensBW.length === 0) throw new Error('sem SKUs');
 
+                itensPorSku = new Map();
+                itensBW.forEach(item => {
+                    if (!itensPorSku.has(item.sku)) itensPorSku.set(item.sku, []);
+                    itensPorSku.get(item.sku).push(item);
+                });
+                resolverPronto(true);
+
                 preencherFiltros();
 
                 const totalSkus = new Set(itensBW.map(i => i.sku)).size;
@@ -183,6 +199,7 @@
                 }
             })
             .catch(() => {
+                resolverPronto(false);
                 const status = el('status-bw');
                 status.textContent = '❌ beautyweek.xlsx não encontrado na raiz.';
                 status.classList.add('status-erro');
@@ -393,6 +410,33 @@
         XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dados), 'Beauty Week');
         XLSX.writeFile(wb, 'BeautyWeek_Estoque.xlsx');
     }
+
+    // --- 5. API para a aba "Promoções do Ciclo" ---
+
+    // "Entra na Beauty Week em 26/11 · 30% (Fim de semana, até 30/11)"
+    // "Na Beauty Week desde 03/11 · 50% (Ciclo todo, até 30/11)"
+    // Promoções já encerradas não geram alerta.
+    function alertasSku(sku) {
+        const promocoes = itensPorSku.get(normalizarSKU(sku)) || [];
+        const hoje = hojeMeiaNoite();
+
+        return promocoes
+            .map(item => ({ item: item, situacao: calcularSituacao(item, hoje) }))
+            .filter(p => p.situacao.chave !== 'encerrada')
+            .sort((a, b) => a.item.inicio - b.item.inicio)
+            .map(({ item, situacao }) => {
+                const inicio = situacao.chave === 'futura'
+                    ? `Entra na Beauty Week em ${diaMes(item.inicio)}`
+                    : `Na Beauty Week desde ${diaMes(item.inicio)}`;
+                const desconto = item.desconto ? ` · ${item.desconto}` : '';
+                return `${inicio}${desconto} (${item.periodo}, até ${diaMes(item.fim)})`;
+            });
+    }
+
+    window.BeautyWeek = {
+        pronto: pronto,
+        alertasSku: alertasSku
+    };
 
     // --- Inicialização ---
     window.addEventListener('DOMContentLoaded', () => {

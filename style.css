@@ -599,3 +599,20 @@ main {
     color: var(--dark-pink);
     font-size: 0.8rem;
 }
+
+/* Alerta de Beauty Week nos cards da aba "Promoções do Ciclo"
+   (item liberado no +L+B ou Curva A que está/entra na Beauty Week) */
+.alerta-bw {
+    margin-top: 8px;
+    padding: 6px 8px;
+    background: #fff3e0;
+    border-left: 3px solid #fb8c00;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    color: #a14600;
+    font-weight: 600;
+}
+
+.alerta-bw span { display: block; }
+.alerta-bw span + span { margin-top: 4px; }

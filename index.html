@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificador de Estoque Promocional</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -68,6 +68,13 @@
                             <option value="50">Liberado até 50%</option>
                             <option value="30">Liberado até 30%</option>
                             <option value="15">Liberado até 15%</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroBW">Beauty Week:</label>
+                        <select id="filtroBW">
+                            <option value="">Todos</option>
+                            <option value="alerta">⚠️ Só com alerta BW</option>
                         </select>
                     </div>
                 </div>
@@ -290,8 +297,8 @@
 
     </main>
 
-    <script src="script.js?v=8"></script>
+    <script src="script.js?v=9"></script>
     <script src="botrecicla.js?v=2"></script>
-    <script src="beautyweek.js?v=1"></script>
+    <script src="beautyweek.js?v=2"></script>
 </body>
 </html>
