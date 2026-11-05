@@ -551,7 +551,7 @@ main {
 .resumo-futuro { border-left-color: #ffb74d; }
 .resumo-futuro .resumo-num { color: #e65100; }
 
-.bw-table { min-width: 980px; }
+.bw-table { min-width: 820px; }
 
 .bw-table .col-desc small {
     display: block;
@@ -560,11 +560,24 @@ main {
     color: #999;
 }
 
-.col-periodo,
-.col-vigencia,
-.col-desconto { white-space: nowrap; }
+.col-vigencia {
+    white-space: nowrap;
+    color: #555;
+    font-weight: 600;
+}
 
-.col-vigencia { color: #555; font-weight: 600; }
+.col-vigencia small {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: #999;
+}
+
+/* Desconto pode quebrar linha (progressivo da QDB tem várias faixas) */
+.col-desconto { min-width: 70px; line-height: 1.35; }
+
+.bw-table .col-desc { min-width: 200px; }
 
 .marca-oui {
     background: linear-gradient(135deg, #ffecb3, #ffd54f);
@@ -616,3 +629,7 @@ main {
 
 .alerta-bw span { display: block; }
 .alerta-bw span + span { margin-top: 4px; }
+
+/* Espaçamento menor para as 9 colunas caberem sem rolagem a partir de ~1000px */
+.bw-table thead th,
+.bw-table tbody td { padding-left: 8px; padding-right: 8px; }

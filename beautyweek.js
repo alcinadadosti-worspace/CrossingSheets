@@ -325,6 +325,17 @@
         return `<span class="vig-pill vig-${situacao.chave}">${escapar(textoSituacao(situacao))}</span>`;
     }
 
+    // "Progressivo 1: 15% | 2: 20% | 3+: 25%" vira "Progressivo" + uma faixa por linha
+    // ("1 un: 15%", "2 un: 20%"...), para não alargar a tabela
+    function celulaDesconto(desconto) {
+        const partes = String(desconto || '-')
+            .replace(/^Progressivo\s+/i, 'Progressivo|')
+            .split('|')
+            .map(p => p.trim().replace(/^(\d+\+?):/, '$1 un:'))
+            .filter(Boolean);
+        return `<span class="bw-desconto">${partes.map(escapar).join('<br>')}</span>`;
+    }
+
     function detalheDescricao(linha) {
         const partes = [linha.submarca, linha.categoria].filter(Boolean);
         if (linha.mecanica && linha.mecanica !== 'Desconto Direto') partes.push(linha.mecanica);
@@ -340,10 +351,9 @@
                 <td class="col-sku">${escapar(linha.sku)}</td>
                 <td class="col-desc">${escapar(linha.descricao)}${detalheDescricao(linha)}</td>
                 <td class="col-marca"><span class="badge-marca ${classeMarca(linha.marca)}">${escapar(linha.marca)}</span></td>
-                <td class="col-periodo">${escapar(linha.periodo)}</td>
-                <td class="col-vigencia">${diaMes(linha.inicio)} → ${diaMes(linha.fim)}</td>
+                <td class="col-vigencia">${diaMes(linha.inicio)} → ${diaMes(linha.fim)}<small>${escapar(linha.periodo)}</small></td>
                 <td class="col-situacao">${celulaSituacao(linha.situacao)}</td>
-                <td class="col-desconto"><span class="bw-desconto">${escapar(linha.desconto || '-')}</span></td>
+                <td class="col-desconto">${celulaDesconto(linha.desconto)}</td>
                 <td class="col-qtd">${celulaQuantidade(linha.quantidades['13706'])}</td>
                 <td class="col-qtd">${celulaQuantidade(linha.quantidades['13707'])}</td>
                 <td class="col-qtd"><strong>${formatarQuantidade(linha.total)}</strong></td>
