@@ -633,3 +633,42 @@ main {
 /* Espaçamento menor para as 9 colunas caberem sem rolagem a partir de ~1000px */
 .bw-table thead th,
 .bw-table tbody td { padding-left: 8px; padding-right: 8px; }
+
+/* =========================================================
+   Aba Semana Outlet (tabela reaproveita o estilo .bw-table)
+   ========================================================= */
+#panel-outlet .empty-msg {
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    padding: 20px 0;
+}
+
+#outlet-section { border-top-color: #ffb74d; }
+
+#outlet-section .btn-export:hover {
+    background-color: #fff3e0;
+    border-color: #e65100;
+    color: #e65100;
+}
+
+.outlet-table .col-desconto { white-space: nowrap; }
+
+.outlet-table .col-desconto small {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.7rem;
+    color: #777;
+}
+
+.outlet-bso {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--dark-pink);
+}
+
+.outlet-sem-bso {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #aaa;
+}

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificador de Estoque Promocional</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=11">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -36,6 +36,9 @@
             </button>
             <button class="tab-btn" data-tab="beautyweek">
                 💄 Beauty Week <span class="tab-count" id="tab-count-bw"></span>
+            </button>
+            <button class="tab-btn" data-tab="outlet">
+                🏷️ Semana Outlet <span class="tab-count" id="tab-count-outlet"></span>
             </button>
         </nav>
 
@@ -294,10 +297,126 @@
 
         </section>
 
+        <section class="tab-panel" id="panel-outlet">
+
+            <div class="recomp-intro">
+                <h2>Semana Outlet — Especial Beauty Week</h2>
+                <p>Itens da Semana Outlet do ciclo 16 de O Boticário, QDB, Eudora e O.U.I, com até quando cada item fica no outlet, o desconto com BSO da indústria e o limite liberado no +L+B. Cruza com a mesma planilha de estoque importada acima.</p>
+                <div id="status-outlet" class="status-line">⏳ Carregando lista da Semana Outlet...</div>
+            </div>
+
+            <p class="empty-msg" id="outlet-placeholder">Importe a planilha de estoque acima para cruzar os SKUs.</p>
+
+            <div id="outlet-content" class="hidden">
+
+                <div class="resumo-cards">
+                    <div class="resumo-card resumo-ok">
+                        <span class="resumo-num" id="outlet-com">0</span>
+                        <small>Com estoque</small>
+                    </div>
+                    <div class="resumo-card resumo-futuro">
+                        <span class="resumo-num" id="outlet-bso">0</span>
+                        <small>Com estoque · com BSO</small>
+                    </div>
+                    <div class="resumo-card resumo-no">
+                        <span class="resumo-num" id="outlet-sem">0</span>
+                        <small>Sem estoque</small>
+                    </div>
+                    <div class="resumo-card resumo-total">
+                        <span class="resumo-num" id="outlet-total">0</span>
+                        <small>SKUs na lista</small>
+                    </div>
+                </div>
+
+                <div class="filters-container">
+                    <div class="search-bar">
+                        <input type="text" id="outletSearch" placeholder="🔍 Pesquisar SKU, nome do produto ou subcategoria...">
+                    </div>
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label for="outletFiltroMarca">Marca:</label>
+                            <select id="outletFiltroMarca">
+                                <option value="">Todas as Marcas</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="outletFiltroCategoria">Categoria:</label>
+                            <select id="outletFiltroCategoria">
+                                <option value="">Todas as Categorias</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="outletFiltroFim">Fica no outlet:</label>
+                            <select id="outletFiltroFim">
+                                <option value="">Todas as datas</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="outletFiltroBSO">BSO:</label>
+                            <select id="outletFiltroBSO">
+                                <option value="">Todos</option>
+                                <option value="sim">Com BSO</option>
+                                <option value="nao">Sem BSO</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="outletFiltroLMB">+L+B:</label>
+                            <select id="outletFiltroLMB">
+                                <option value="">Todos</option>
+                                <option value="100">Liberado até 100%</option>
+                                <option value="70">Liberado até 70%</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="outletFiltroEstoque">Estoque:</label>
+                            <select id="outletFiltroEstoque">
+                                <option value="com" selected>Só com estoque</option>
+                                <option value="sem">Só sem estoque</option>
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="unit-section" id="outlet-section">
+                    <div class="unit-header">
+                        <div class="header-title">
+                            <h2>Cruzamento com o estoque</h2>
+                        </div>
+                        <button id="btn-export-outlet" class="btn-export">📥 Excel</button>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="recomp-table bw-table outlet-table">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Descrição</th>
+                                    <th>Marca</th>
+                                    <th>Vigência</th>
+                                    <th>Situação</th>
+                                    <th>Desconto <small>BSO · +L+B</small></th>
+                                    <th>Palmeira <small>13706</small></th>
+                                    <th>Penedo <small>13707</small></th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="outlet-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <p class="empty-msg" id="outlet-msg-vazio" style="display: none;">Nenhum item corresponde aos filtros.</p>
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
 
     <script src="script.js?v=9"></script>
     <script src="botrecicla.js?v=2"></script>
     <script src="beautyweek.js?v=3"></script>
+    <script src="semanaoutlet.js?v=1"></script>
 </body>
 </html>
